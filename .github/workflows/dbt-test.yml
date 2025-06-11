@@ -1,6 +1,8 @@
 name: DBT Test
 
-on: [ main ]
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   dbt-test:
