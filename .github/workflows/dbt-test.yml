@@ -25,3 +25,6 @@ jobs:
       - name: Run dbt test
         run: |
           uv run dbt test
+        env:
+          DBT_PROFILES_DIR: .
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
