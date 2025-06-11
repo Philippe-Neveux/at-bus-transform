@@ -1,0 +1,12 @@
+dbt_data_transform:
+  outputs:
+    dev:
+      dataset: "{{ env_var('GCP_DATASET_BIGQUERY') }}"
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      method: service-account
+      priority: interactive
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      threads: 1
+      type: bigquery
+  target: dev
