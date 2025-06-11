@@ -27,9 +27,9 @@ jobs:
           uv sync
           uv venv
 
-      - name: Build dbt project
+      - name: Test dbt project
         run: |
-          uv run dbt build --profiles-dir ./
+          uv run dbt test --profiles-dir ./
         env:
           GCP_DATASET_BIGQUERY: ${{ secrets.GCP_DATASET_BIGQUERY }}
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
