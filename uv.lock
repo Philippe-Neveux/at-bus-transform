@@ -238,6 +238,21 @@ wheels = [
 ]
 
 [[package]]
+name = "dbt-data-transform"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "dbt-bigquery" },
+    { name = "dbt-core" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "dbt-bigquery", specifier = ">=1.9.2" },
+    { name = "dbt-core", specifier = ">=1.9.7" },
+]
+
+[[package]]
 name = "dbt-extractor"
 version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -290,21 +305,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/53/67/86c4c068d1c6371928064bb9fe44eb8fbc4e15bb101e924d2e596c6fa511/dbt_semantic_interfaces-0.7.4.tar.gz", hash = "sha256:dcedda6702ecabb633aa4e8ab3b1eb7f9c4301dcc0026076a4a0ef64f9e59cf0", size = 90809, upload-time = "2024-10-15T21:35:31.169Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a3/4d/9e0eec04821154c51c05dab77bc3eed95337c42f471d6ffe7b4a699e8cb1/dbt_semantic_interfaces-0.7.4-py3-none-any.whl", hash = "sha256:63965478ef27056f20a8c9a0f59b1355ebbc15133c1a6f0d368d93996a31dd5d", size = 141981, upload-time = "2024-10-15T21:35:32.343Z" },
-]
-
-[[package]]
-name = "dbt-tuto"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "dbt-bigquery" },
-    { name = "dbt-core" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "dbt-bigquery", specifier = ">=1.9.2" },
-    { name = "dbt-core", specifier = ">=1.9.7" },
 ]
 
 [[package]]
@@ -938,6 +938,9 @@ dependencies = [
     { name = "setuptools" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6b/0c/18b893b071144bbd8c841987042e218c8e4d1fc590d8302842580d419a7b/pandas_gbq-0.29.1.tar.gz", hash = "sha256:a6ead6199174094317e05729677d30384460335bb2a138d02c1f2edbfdb78fc3", size = 65744, upload-time = "2025-06-09T14:24:48.112Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/5e/b2363eedadcdfca4588689d7240d09781a7a2bf7f3e1f60f914e0575ab00/pandas_gbq-0.29.1-py3-none-any.whl", hash = "sha256:21aaaf6f62723aeb3a8751f3fd8afff00f4b237ae722cbe6c4e79f17c8677086", size = 41065, upload-time = "2025-06-10T14:37:34.241Z" },
+]
 
 [[package]]
 name = "parsedatetime"
