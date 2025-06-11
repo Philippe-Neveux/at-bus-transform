@@ -24,7 +24,7 @@ jobs:
 
       - name: Build dbt project
         run: |
-          uv run dbt build --profiles-dir ./
+          uv run dbt test --profiles-dir ./
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           GCP_DATASET_BIGQUERY: ${{ secrets.GCP_DATASET_BIGQUERY }}
