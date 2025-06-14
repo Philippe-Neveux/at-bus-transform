@@ -19,7 +19,7 @@ models:
               values: ['Introvert', 'Extrovert']
 
   - name: personality_dataset_gold
-    description: "The gold dataset, column are lower cased"
+    description: "The gold dataset, column are lower cased, ... some description"
     columns:
       - name: ime_spent_alone
       - name: stage_fear
