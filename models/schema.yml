@@ -15,7 +15,6 @@ models:
         type: string
         tests:
           - not_null
-          - unique
       
       - name: location_type
         description: "Type of location"
