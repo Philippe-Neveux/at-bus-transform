@@ -12,7 +12,6 @@
     SELECT table_name 
     FROM `{{ target.project }}.at_bus_bronze.INFORMATION_SCHEMA.TABLES`
     WHERE table_name LIKE 'stops_%'
-    AND table_name != 'stops_consolidated_dynamic_sources'
     ORDER BY table_name
 {% endset %}
 
