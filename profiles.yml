@@ -1,4 +1,4 @@
-dbt_data_transform:
+dbt_at_bus_transform:
   target: dev
   outputs:
     dev:
