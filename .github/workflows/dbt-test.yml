@@ -2,7 +2,7 @@ name: DBT Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ run-dbt-test ]
 
 jobs:
   dbt-test:

@@ -57,17 +57,7 @@ jobs:
       run: |
         echo "Updating submodule on GCP VM..."
         ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
-          cd airflow-deploy/dags/db-at-bus-transform
+          cd /home/mac/airflow-deploy/dags/db-at-bus-transform
           git pull origin main
           echo "Submodule updated successfully"
         EOF
-        
-    # - name: Restart Airflow services (optional)
-    #   run: |
-    #     ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
-    #       # Restart Airflow webserver and scheduler if needed
-    #       sudo systemctl restart airflow-webserver
-    #       sudo systemctl restart airflow-scheduler
-    #       echo "Airflow services restarted"
-    #     EOF
-    #   if: ${{ github.event_name == 'push' }} 
