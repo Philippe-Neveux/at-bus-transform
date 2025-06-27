@@ -12,6 +12,32 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
+    - name: Debug secrets (masked)
+      run: |
+        echo "Checking if secrets are set..."
+        if [ -z "${{ secrets.GCP_VM_SSH_PRIVATE_KEY }}" ]; then
+          echo "❌ GCP_VM_SSH_PRIVATE_KEY is not set"
+          exit 1
+        else
+          echo "✅ GCP_VM_SSH_PRIVATE_KEY is set"
+        fi
+        
+        if [ -z "${{ secrets.GCP_VM_IP }}" ]; then
+          echo "❌ GCP_VM_IP is not set"
+          exit 1
+        else
+          echo "✅ GCP_VM_IP is set"
+        fi
+        
+        if [ -z "${{ secrets.GCP_VM_USER }}" ]; then
+          echo "❌ GCP_VM_USER is not set"
+          exit 1
+        else
+          echo "✅ GCP_VM_USER is set"
+        fi
+        
+        echo "All secrets are configured"
+      
     - name: Setup SSH
       uses: webfactory/ssh-agent@v0.8.0
       with:
@@ -19,10 +45,17 @@ jobs:
         
     - name: Add GCP VM to known hosts
       run: |
+        echo "Adding ${{ secrets.GCP_VM_IP }} to known hosts..."
         ssh-keyscan -H ${{ secrets.GCP_VM_IP }} >> ~/.ssh/known_hosts
+        
+    - name: Test SSH connection
+      run: |
+        echo "Testing SSH connection to ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }}..."
+        ssh -o ConnectTimeout=10 ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} "echo 'SSH connection successful'"
         
     - name: Update submodule on GCP VM
       run: |
+        echo "Updating submodule on GCP VM..."
         ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
           cd airflow-deploy/dags/db-at-bus-transform
           git pull origin main
