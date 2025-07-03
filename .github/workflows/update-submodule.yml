@@ -9,35 +9,48 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
+
+    - uses: 'google-github-actions/auth@v2'
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Setup Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
       
     - name: Setup SSH
       uses: webfactory/ssh-agent@v0.8.0
       with:
         ssh-private-key: ${{ secrets.GCP_VM_SSH_PRIVATE_KEY }}
-        
-    - name: Add GCP VM to known hosts
+
+    - name: Run command on GCP VM using gcloud CLI
       run: |
-        echo "Adding ${{ secrets.GCP_VM_IP }} to known hosts..."
-        ssh-keyscan -H ${{ secrets.GCP_VM_IP }} >> ~/.ssh/known_hosts
+        gcloud compute ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_NAME }} \
+          --zone=${{ secrets.GCP_VM_ZONE }} \
+          --project=${{ secrets.GCP_PROJECT_ID }} \
+          --command="cd /home/mac/airflow-deploy/dags/dbt/dbt-at-bus-transform \
+            && git submodule update --init --recursive --remote \
+            && git config user.name 'github-actions[bot]' \
+            && git config user.email 'github-actions[bot]@users.noreply.github.com' \
+            && git add . \
+            && git commit -m 'chore: update submodules from `dbt-at-bus-transform` repository [skip ci]' \
+            || echo 'No changes to commit' && git push origin main"
         
-    - name: Test SSH connection
-      run: |
-        echo "Testing SSH connection to ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }}..."
-        ssh -o ConnectTimeout=10 ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} "echo 'SSH connection successful'"
-        
-    - name: Update submodule on GCP VM
-      run: |
-        echo "Updating submodule on GCP VM..."
-        ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
-          cd /home/mac/airflow-deploy/dags/dbt/dbt-at-bus-transform
-          git submodule update --init --recursive --remote
+    # - name: Update submodule on GCP VM
+    #   run: |
+    #     echo "Updating submodule on GCP VM..."
+    #     ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
+    #       cd /home/mac/airflow-deploy/dags/dbt/dbt-at-bus-transform
+    #       git submodule update --init --recursive --remote
           
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: update submodules [skip ci]"
-          git push origin main
-          echo "Submodule updated and pushed successfully"
-        EOF
+    #       git config user.name "github-actions[bot]"
+    #       git config user.email "github-actions[bot]@users.noreply.github.com"
+    #       git add .
+    #       git commit -m "chore: update submodules [skip ci]"
+    #       git push origin main
+    #       echo "Submodule updated and pushed successfully"
+    #     EOF
