@@ -12,32 +12,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Debug secrets (masked)
-      run: |
-        echo "Checking if secrets are set..."
-        if [ -z "${{ secrets.GCP_VM_SSH_PRIVATE_KEY }}" ]; then
-          echo "❌ GCP_VM_SSH_PRIVATE_KEY is not set"
-          exit 1
-        else
-          echo "✅ GCP_VM_SSH_PRIVATE_KEY is set"
-        fi
-        
-        if [ -z "${{ secrets.GCP_VM_IP }}" ]; then
-          echo "❌ GCP_VM_IP is not set"
-          exit 1
-        else
-          echo "✅ GCP_VM_IP is set"
-        fi
-        
-        if [ -z "${{ secrets.GCP_VM_USER }}" ]; then
-          echo "❌ GCP_VM_USER is not set"
-          exit 1
-        else
-          echo "✅ GCP_VM_USER is set"
-        fi
-        
-        echo "All secrets are configured"
-      
     - name: Setup SSH
       uses: webfactory/ssh-agent@v0.8.0
       with:
@@ -53,39 +27,17 @@ jobs:
         echo "Testing SSH connection to ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }}..."
         ssh -o ConnectTimeout=10 ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} "echo 'SSH connection successful'"
         
-    - name: Debug directory structure
-      run: |
-        echo "Checking directory structure on VM..."
-        ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
-          echo "=== Current user and home directory ==="
-          whoami
-          pwd
-          echo $HOME
-          
-          echo "=== Checking if airflow-deploy exists ==="
-          ls -la /home/mac/ | grep airflow
-          
-          echo "=== Checking airflow-deploy structure ==="
-          if [ -d "/home/mac/airflow-deploy" ]; then
-            find /home/mac/airflow-deploy -type d -name "*dbt*" 2>/dev/null
-            echo "=== Full airflow-deploy structure ==="
-            tree /home/mac/airflow-deploy -L 3 || ls -la /home/mac/airflow-deploy/
-          else
-            echo "airflow-deploy directory not found"
-          fi
-          
-          echo "=== Searching for dbt-at-bus-transform ==="
-          find /home/mac -name "*dbt-at-bus-transform*" 2>/dev/null
-          
-          echo "=== Checking for git repositories ==="
-          find /home/mac -name ".git" -type d 2>/dev/null
-        EOF
-        
     - name: Update submodule on GCP VM
       run: |
         echo "Updating submodule on GCP VM..."
         ssh ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
           cd /home/mac/airflow-deploy/dags/dbt/dbt-at-bus-transform
-          git pull origin main
-          echo "Submodule updated successfully"
+          git submodule update --init --recursive --remote
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: update submodules [skip ci]"
+          git push origin main
+          echo "Submodule updated and pushed successfully"
         EOF
