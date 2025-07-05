@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
     - name: Trigger repository dispatch
       uses: convictional/trigger-workflow-and-wait@v1.6.5
       with:
