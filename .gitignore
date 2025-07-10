@@ -21,5 +21,5 @@ logs/
 data/
 
 # Creds
-dbt-user-creds.json
+at-bus-transform-key.json
 .vscode/

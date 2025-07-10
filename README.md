@@ -1,56 +1,66 @@
-# dbt-at-bus-transform
+# At Bus transform
 
-This project uses [dbt](https://www.getdbt.com/) to transform and analyze a personality dataset.
-This is a change.
+This dbt project transforms Auckland Transport (AT) bus data into a structured format for analysis. It fetches raw data from AT's public API, processes it through staging and intermediate models, and produces a final gold dataset.
 
 ## Project Structure
 
-- **models/**: Contains dbt models, including:
-  - `personality_dataset_updated.sql`: Loads and cleans the raw dataset.
-  - `personality_dataset_gold.sql`: Produces the gold (final) dataset with standardized column names.
-  - `schema.yml`: Describes model schemas and tests.
-- **macros/**, **analyses/**, **seeds/**, **snapshots/**: Standard dbt project directories.
-- **dbt_project.yml**: Main dbt project configuration.
-- **pyproject.toml**: Python project configuration.
-- **dbt-user-creds.json**: Credentials for dbt (BigQuery).
+- **models/**: Contains the dbt models, organized into:
+  - `silver/`: Intermediate transformations that clean and structure the raw data.
+  - `gold/`: Final, analytics-ready models.
+- **macros/**: Contains custom Jinja macros.
+- **analyses/**: Contains ad-hoc analyses.
+- **seeds/**: Contains seed data for the project.
+- **snapshots/**: Contains model snapshots for tracking changes over time.
+- **dbt_project.yml**: The main dbt project configuration file.
+- **profiles.yml**: Configures connection settings for dbt to connect to BigQuery.
+- **pyproject.toml**: Python project configuration for tools like `uv`.
+- **Makefile**: Contains convenient commands for common tasks.
 
 ## Setup
 
-1. **Install dependencies with uv**  
+1. **Install Dependencies**
+   Install the required Python packages using `uv`:
    ```sh
-   uv sync # Downloads all python dependencies
-   uv venv # Creates a virtual environment
-   ``` 
+   uv sync
+   ```
 
-2. **Configure credentials**  
-   Update `dbt-user-creds.json` with your BigQuery credentials.
+2. **Set Up Environment Variables**
+   This project uses BigQuery for its data warehouse. You need to configure your GCP credentials as environment variables. Create a `.env` file in the root of the project and add the following:
+   ```
+   GCP_PROJECT_ID="your-gcp-project-id"
+   GCP_DATASET_BIGQUERY="your-bigquery-dataset"
+   ```
+   The dbt profile is configured to read these variables for the connection.
 
+3. **Authenticate with GCP**
+   Make sure you have the `gcloud` CLI installed and authenticated:
+   ```sh
+   gcloud auth application-default login
+   ```
 
 ## Usage
 
-- **Run transformations:**
+This project includes a `Makefile` to simplify common commands.
+
+- **Run all dbt models:**
   ```sh
-  dbt run
-  ```
-- **Test models:**
-  ```sh
-  dbt test
-  ```
-- **View documentation:**
-  ```sh
-  dbt docs generate
-  dbt docs serve
+  make dbt_run
   ```
 
-## Data
+- **Test all dbt models:**
+  ```sh
+  make dbt_test
+  ```
 
-The main dataset is located at [`data/personality_dataset.csv`](data/personality_dataset.csv).  
-It contains columns such as:
-- `Time_spent_Alone`
-- `Stage_fear`
-- `Social_event_attendance`
-- `Going_outside`
-- `Drained_after_socializing`
-- `Friends_circle_size`
-- `Post_frequency`
-- `Personality` (target: Introvert/Extrovert)
+- **Generate and view dbt documentation:**
+  ```sh
+  make dbt_docs
+  ```
+
+- **Run specific models:**
+  The `Makefile` also includes targets for running specific sets of models:
+  ```sh
+  make dbt_run_stops_consolidated
+  make dbt_run_trips_consolidated
+  make dbt_run_gold_dataset
+  ```

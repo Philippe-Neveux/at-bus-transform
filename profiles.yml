@@ -1,4 +1,4 @@
-dbt-at-bus-transform:
+at-bus-transform:
   target: dev
   outputs:
     dev:

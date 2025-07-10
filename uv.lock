@@ -238,7 +238,7 @@ wheels = [
 ]
 
 [[package]]
-name = "dbt-at-bus-transform"
+name = "at-bus-transform"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
