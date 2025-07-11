@@ -1,4 +1,4 @@
-at-bus-transform:
+at_bus_transform:
   target: dev
   outputs:
     dev:
